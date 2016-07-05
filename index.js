@@ -11,7 +11,7 @@ const converters = {
     return Number(val);
   },
   'boolean'(val) {
-    return !!val && val !== 'false'
+    return !!val && val !== 'false';
   }
 };
 
