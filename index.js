@@ -16,9 +16,9 @@ const converters = {
 };
 
 
-function getRandomBytes(size) {
+function genRandomBytes(size) {
   return new Promise((resolve, reject) => {
-    crypto.randomBytes(24, (err, buf) => {
+    crypto.randomBytes(size, (err, buf) => {
       if (!err) {
         resolve(buf);
       } else {
@@ -29,7 +29,7 @@ function getRandomBytes(size) {
 }
 
 function genSessionKey() {
-  return getRandomBytes(24).then(buf => {
+  return genRandomBytes(24).then(buf => {
     return buf.toString('base64')
             .replace(/\+/g, '-')
             .replace(/\//g, '_')
@@ -71,5 +71,5 @@ module.exports = {
   merge,
   getClientIp,
   genSessionKey,
-  getRandomBytes
+  genRandomBytes
 };
