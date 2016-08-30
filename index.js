@@ -2,7 +2,11 @@
 
 const crypto = require('crypto');
 const validators = require('./src/validators');
+const fs = require('fs');
+const path = require('path');
 const getClientIp = require('./src/getip');
+const FreeList = require('./src/free_list');
+
 const converters = {
   'string'(val) {
     return val.toString();
@@ -31,9 +35,9 @@ function genRandomBytes(size) {
 function genSessionKey() {
   return genRandomBytes(24).then(buf => {
     return buf.toString('base64')
-            .replace(/\+/g, '-')
-            .replace(/\//g, '_')
-            .replace(/=/g, '');
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
   });
 }
 
@@ -42,6 +46,28 @@ function merge(src, dst) {
     src[k] = dst[k];
   }
   return src;
+}
+
+function mkdir(dir) {
+  return new Promise((resolve, reject) => {
+    fs.access(dir, err => { // 首先检测是否已经存在
+      if (err) {
+        // 如果不存在，先创建其父亲文件夹。这是一个递归的过程
+        let parentDir = path.dirname(dir);
+        mkdir(parentDir).then(() => {
+          fs.mkdir(dir, err => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve();
+            }
+          });
+        }, reject);
+      } else { // 如果已经存在则直接返回
+        resolve();
+      }
+    });
+  });
 }
 
 module.exports = {
@@ -69,7 +95,9 @@ module.exports = {
     return typeof obj !== 'undefined'
   },
   merge,
+  FreeList,
   getClientIp,
   genSessionKey,
-  genRandomBytes
+  genRandomBytes,
+  mkdirP: mkdir
 };
