@@ -1,41 +1,39 @@
-
-const BUF_SIZE = 1000;
-
 class FreeList {
-  constructor(constructor, max = 50) {
-    this.constructor = constructor;
-    this.max = max * BUF_SIZE;
-    this.len = BUF_SIZE;
-    this.list = new Array(this.len);
+  constructor(constructor, size = 10000) {
+    this._constructor = constructor;
+    this._buffer = new Array(size);
+    this._avaliable = -1;
+    this._init();
+  }
+  _init() {
+    for(let i = 0; i < this._buffer.length; i++) {
+      let obj = new this._constructor();
+      obj.$$freeListPosition = i;
+      obj.$$freeListNext = i - 1;
+      this._buffer[i] = obj;
+    }
+    this._avaliable = this._buffer.length - 1;
   }
   alloc(...args) {
-    let i = 0;
-    for(; i < this.len; i++) { // 这里使用的是线性遍历的方法, 使用时间换空间效率
-      let obj = this.list[i];
-      if (!obj) {
-        obj = new this.constructor(...args);
-        this.list[i] = obj;
-        return obj;
-      } else if (!obj.$$freeListIsUsed) {
-        obj.$$freeListInit(...args);
-        return obj;
-      }
-    }
-
-    if (this.len < this.max) {
-      this.len += BUF_SIZE;
-      this.list.length = this.len; // 扩容
-      let obj = new this.constructor(...args);
-      this.list[i] = obj;
+    if (this._avaliable < 0) {
+      console.log('MAX_FREE_LIST');
+      let obj = new this._constructor();
+      obj.$$freeListInit(...args);
+      obj.$$freeListPosition = -1;
       return obj;
     }
-    // 如果 this.max (默认为 50 * 1000) 个空间都被用完了, 直接返回新实例。
-    // 同时发起请求用户达到 50000 我擦!
-    console.log('MAX_FREE_LIST');
-    return new this.constructor(...args);
+    let obj = this._buffer[this._avaliable];
+    this._avaliable = obj.$$freeListNext;
+    obj.$$freeListInit(...args);
+    return obj;
   }
   free(obj) {
     obj.$$freeListFree();
+    if (obj.$$freeListPosition < 0) {
+      return;
+    }
+    obj.$$freeListNext = this._avaliable;
+    this._avaliable = obj.$$freeListPosition;
   }
 }
 
