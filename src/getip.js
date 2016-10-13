@@ -39,39 +39,38 @@ function getClientIp(req) {
   else if (ipAddress = headers['x-cluster-client-ip']) {
     return ipAddress;
   }
-
   // x-forwarded
   else if (ipAddress = headers['x-forwarded']) {
     return ipAddress;
   }
-
   // forwarded-for
   else if (ipAddress = headers['forwarded-for']) {
     return ipAddress;
   }
-
   // forwarded
   else if (ipAddress = headers['forwarded']) {
     return ipAddress;
-  }
-
-  // remote address checks
-  else if (req.connection && req.connection.remoteAddress) {
-    return req.connection.remoteAddress;
-  }
-  else if (req.socket && req.socket.remoteAddress) {
-    return req.socket.remoteAddress;
-  }
-  else if (req.connection && req.connection.socket && req.connection.socket.remoteAddress) {
-    return req.connection.socket.remoteAddress;
-  }
-  else if (req.info && req.info.remoteAddress) {
-    return req.info.remoteAddress;
-  }
-  // return unknown if we cannot find an address
-  else {
-    return 'unknown';
+  } else {
+    return '';
   }
 }
 
-module.exports = getClientIp;
+function getRemoteIp(req) {
+  // remote address checks
+  if (req.connection && req.connection.remoteAddress) {
+    return req.connection.remoteAddress;
+  } else if (req.socket && req.socket.remoteAddress) {
+    return req.socket.remoteAddress;
+  } else if (req.connection && req.connection.socket && req.connection.socket.remoteAddress) {
+    return req.connection.socket.remoteAddress;
+  } else if (req.info && req.info.remoteAddress) {
+    return req.info.remoteAddress;
+  } else {
+    return '';
+  }
+}
+
+module.exports = {
+  getClientIp,
+  getRemoteIp
+};

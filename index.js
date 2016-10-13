@@ -4,7 +4,8 @@ const crypto = require('crypto');
 const validators = require('./src/validators');
 const fs = require('fs');
 const path = require('path');
-const getClientIp = require('./src/getip');
+const formatDate = require('./src/format_date');
+const { getClientIp, getRemoteIp } = require('./src/getip');
 const FreeList = require('./src/free_list');
 
 const converters = {
@@ -70,7 +71,27 @@ function mkdir(dir) {
   });
 }
 
+function logStatus(status = {}) {
+  const cu = process.cpuUsage();
+  const mu = process.memoryUsage();
+  let sysSatus = {
+    cpuUsage: cu,
+    memoryUsage: mu
+  }
+  Object.assign(sysSatus, status);
+  let stream = fs.createWriteStream(path.join(process.cwd(), 'status.log'), {
+    flags: 'a'
+  });
+  let info = `====== ${process.title} [${formatDate()}] ======\n`;
+  info += JSON.stringify(sysSatus, null, '  ') + '\n';
+  stream.write(info);
+  stream.end();
+}
+
 module.exports = {
+  registerValidators(newValidators) {
+    Object.assign(validators, newValidators);
+  },
   validators,
   converters,
   isGenerateFunction(obj) {
@@ -97,7 +118,10 @@ module.exports = {
   merge,
   FreeList,
   getClientIp,
+  getRemoteIp,
   genSessionKey,
   genRandomBytes,
+  formatDate,
+  logStatus,
   mkdirP: mkdir
 };

@@ -30,5 +30,11 @@ module.exports = {
   },
   pattern(val, regExp) {
     return regExp.test(val);
+  },
+  regExp(val, regExp) {
+    return regExp.test(val);
+  },
+  regexp(val, regExp) {
+    return regExp.test(val);
   }
 };
