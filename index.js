@@ -93,6 +93,9 @@ module.exports = {
     Object.assign(validators, newValidators);
   },
   validators,
+  registerConverters(newConverters) {
+    Object.assign(converters, newConverters);
+  },
   converters,
   isGenerateFunction(obj) {
     return typeof obj === 'function' && obj.constructor.name === 'GeneratorFunction';
