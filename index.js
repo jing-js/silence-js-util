@@ -88,6 +88,34 @@ function logStatus(status = {}) {
   stream.end();
 }
 
+function formatArray(args) {
+  if (args.length === 1) {
+    return formatValue(args[0]);
+  } else {
+    let out = '';
+    let e = args.length - 1;
+    for(let i = 0; i <= e; i++) {
+      out += formatValue(args[i]) + (i === e ? '' : ' ');
+    }
+    return out;
+  }
+}
+
+function formatValue(v) {
+  if (v === null || v === undefined) {
+    return ''
+  } else {
+    return v.toString();
+  }
+}
+function formatError(err) {
+  if (err instanceof Error) {
+    return err.stack || err.message || err.toString();
+  } else {
+    return formatValue(err);
+  }
+}
+
 module.exports = {
   registerValidators(newValidators) {
     Object.assign(validators, newValidators);
@@ -118,6 +146,9 @@ module.exports = {
   isDefined(obj) {
     return typeof obj !== 'undefined'
   },
+  formatArray,
+  formatValue,
+  formatError,
   merge,
   FreeList,
   getClientIp,
