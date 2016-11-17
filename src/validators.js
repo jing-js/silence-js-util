@@ -4,37 +4,28 @@ module.exports = {
   isArray(val) {
     return Array.isArray(val);
   },
-  minLength(val, length) {
+  minLength(length, val) {
     return val.length >= length;
   },
-  maxLength(val, length) {
+  maxLength(length, val) {
     return val.length <= length;
   },
-  rangeLength(val, minLength, maxLength) {
+  rangeLength(minLength, maxLength, val) {
     return val.length >= minLength && val.length <= maxLength;
   },
-  max(val, bound) {
+  max(bound, val) {
     return val <= bound;
   },
-  min(val, bound) {
+  min(bound, val) {
     return val >= bound;
   },
-  equal(val, expect) {
+  equal(expect, val) {
     return val === expect;
   },
-  inArray(val, array) {
+  inArray(array, val) {
     return array.indexOf(val) >= 0;
   },
-  length(val, length) {
+  length(length, val) {
     return val.length === length;
-  },
-  pattern(val, regExp) {
-    return regExp.test(val);
-  },
-  regExp(val, regExp) {
-    return regExp.test(val);
-  },
-  regexp(val, regExp) {
-    return regExp.test(val);
   }
 };

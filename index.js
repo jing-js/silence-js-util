@@ -7,19 +7,7 @@ const path = require('path');
 const formatDate = require('./src/format_date');
 const { getClientIp, getRemoteIp } = require('./src/getip');
 const FreeList = require('./src/free_list');
-
-const converters = {
-  'string'(val) {
-    return val.toString();
-  },
-  'number'(val) {
-    return Number(val);
-  },
-  'boolean'(val) {
-    return !!val && val !== 'false';
-  }
-};
-
+const converters = require('./src/converters');
 
 function genRandomBytes(size) {
   return new Promise((resolve, reject) => {
