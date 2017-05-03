@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const formatDate = require('./src/format_date');
 const { getClientIp, getRemoteIp } = require('./src/getip');
-const FreeList = require('./src/free_list');
 const converters = require('./src/converters');
 
 function genRandomBytes(size) {
@@ -138,7 +137,6 @@ module.exports = {
   formatValue,
   formatError,
   merge,
-  FreeList,
   getClientIp,
   getRemoteIp,
   genSessionKey,
